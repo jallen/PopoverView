@@ -64,11 +64,35 @@
 //                         withStringArray:kStringArray
 //                                delegate:self]; // Show the string array defined at top of this file
     
-    pv = [PopoverView showPopoverAtPoint:point
-                                  inView:self.view
-                               withTitle:@"Was this helpful?"
-                         withStringArray:kStringArray
-                                delegate:self]; // Show string array defined at top of this file with title.
+//    pv = [PopoverView showPopoverAtPoint:point
+//                                  inView:self.view
+//                               withTitle:@"Was this helpful?"
+//                         withStringArray:kStringArray
+//                                delegate:self]; // Show string array defined at top of this file with title.
+	
+		pv = [PopoverView showPopoverAtPoint:point
+																	inView:self.view
+															 withTitle:@"Was this helpful?"
+												 withStringArray:kStringArray
+																onSelect:^(PopoverView *sender, NSInteger selectedIndex) {
+																	NSLog(@"%s item:%d", __PRETTY_FUNCTION__, selectedIndex);
+																	
+																	// Figure out which string was selected, store in "string"
+																	NSString *string = [kStringArray objectAtIndex:selectedIndex];
+																	
+																	// Show a success image, with the string from the array
+																	[sender showImage:[UIImage imageNamed:@"success"] withMessage:string];
+																	
+																	// alternatively, you can use
+																	// [popoverView showSuccess];
+																	// or
+																	// [popoverView showError];
+																	
+																	// Dismiss the PopoverView after 0.5 seconds
+																	[sender performSelector:@selector(dismiss) withObject:nil afterDelay:0.5f];
+																} onDismiss:^{
+																	NSLog(@"PopoverView Dismiss Block");
+																}];
 
 //    pv = [PopoverView showPopoverAtPoint:point
 //                                  inView:self.view
