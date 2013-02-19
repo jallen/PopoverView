@@ -119,6 +119,97 @@
     return popoverView;
 }
 
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withText:(NSString *)text onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withText:text];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withText:(NSString *)text onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withTitle:title withText:text];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withViewArray:(NSArray *)viewArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withViewArray:viewArray];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withViewArray:(NSArray *)viewArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withTitle:title withViewArray:viewArray];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withStringArray:stringArray];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withStringArray:(NSArray *)stringArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withTitle:title withStringArray:stringArray];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray withImageArray:(NSArray *)imageArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withStringArray:stringArray withImageArray:imageArray];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withStringArray:(NSArray *)stringArray withImageArray:(NSArray *)imageArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withTitle:title withStringArray:stringArray withImageArray:imageArray];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withContentView:(UIView *)cView onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withTitle:title withContentView:cView];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)cView onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock {
+	PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+	[popoverView showAtPoint:point inView:view withContentView:cView];
+	popoverView.onSelect = selectionBlock;
+	popoverView.onDismiss = dismissBlock;
+	[popoverView release];
+	return popoverView;
+}
+
+
 #pragma mark - View Lifecycle
 
 - (id)initWithFrame:(CGRect)frame
@@ -799,11 +890,16 @@
             if ([view isKindOfClass:[UIButton class]]) {
                 return;
             }
-            
+          
+					if (self.onSelect) {
+						self.onSelect(self, i);
+						self.onSelect = nil;
+					} else {
             if (delegate && [delegate respondsToSelector:@selector(popoverView:didSelectItemAtIndex:)]) {
                 [delegate popoverView:self didSelectItemAtIndex:i];
             }
-            
+					}
+          
             break;
         }
     }
@@ -826,10 +922,15 @@
     if (index == NSNotFound) {
         return;
     }
-    
-    if (delegate && [delegate respondsToSelector:@selector(popoverView:didSelectItemAtIndex:)]) {
-        [delegate popoverView:self didSelectItemAtIndex:index];
-    }
+  
+		if (self.onSelect) {
+			self.onSelect(self, index);
+			self.onSelect = nil;
+		} else {
+			if (delegate && [delegate respondsToSelector:@selector(popoverView:didSelectItemAtIndex:)]) {
+					[delegate popoverView:self didSelectItemAtIndex:index];
+			}
+		}
 }
 
 - (void)dismiss
@@ -857,10 +958,15 @@
 - (void)dismissComplete
 {
     [self removeFromSuperview];
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(popoverViewDidDismiss:)]) {
-        [delegate popoverViewDidDismiss:self];
-    }
+  
+		if (self.onDismiss) {
+			self.onDismiss();
+			self.onDismiss = nil;
+		} else {
+			if (self.delegate && [self.delegate respondsToSelector:@selector(popoverViewDidDismiss:)]) {
+					[delegate popoverViewDidDismiss:self];
+			}
+		}
 }
 
 - (void)animateRotationToNewPoint:(CGPoint)point inView:(UIView *)view withDuration:(NSTimeInterval)duration

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+
+
 @class PopoverView;
 
 @protocol PopoverViewDelegate <NSObject>
@@ -57,6 +59,10 @@
 
 @property (nonatomic, assign) id<PopoverViewDelegate> delegate;
 
+@property (nonatomic, copy) void (^onSelect)();
+
+@property (nonatomic, copy) void (^onDismiss)();
+
 #pragma mark - Class Static Showing Methods
 
 //These are the main static methods you can use to display the popover.
@@ -81,6 +87,28 @@
 + (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withContentView:(UIView *)cView delegate:(id<PopoverViewDelegate>)delegate;
 
 + (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)cView delegate:(id<PopoverViewDelegate>)delegate;
+
+// Same methods with blocks
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withText:(NSString *)text onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withText:(NSString *)text onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withViewArray:(NSArray *)viewArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withViewArray:(NSArray *)viewArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withStringArray:(NSArray *)stringArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray withImageArray:(NSArray *)imageArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withStringArray:(NSArray *)stringArray withImageArray:(NSArray *)imageArray onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withContentView:(UIView *)cView onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)cView onSelect:(void (^)(PopoverView *sender, NSInteger selectedIndex))selectionBlock onDismiss:(void (^)())dismissBlock;
 
 #pragma mark - Instance Showing Methods
 
