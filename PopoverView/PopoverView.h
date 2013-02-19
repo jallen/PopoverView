@@ -35,8 +35,6 @@
     
     UIView *parentView;
     
-    UIView *topView;
-    
     NSArray *subviewsArray;
     
     NSArray *dividerRects;

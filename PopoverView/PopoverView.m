@@ -593,10 +593,6 @@
     self.contentView = cView;
     parentView = view;
     
-    // get the top view
-    // http://stackoverflow.com/questions/3843411/getting-reference-to-the-top-most-view-window-in-ios-application/8045804#8045804
-    topView = [[[[UIApplication sharedApplication] keyWindow] subviews] lastObject];
-    
     [self setupLayout:point inView:view];
     
     // Make the view small and transparent before animation
@@ -631,14 +627,14 @@
 
 -(void)setupLayout:(CGPoint)point inView:(UIView*)view
 {
-    CGPoint topPoint = [topView convertPoint:point fromView:view];
+    CGPoint topPoint = [parentView convertPoint:point fromView:view];
 
     arrowPoint = topPoint;
 
     //NSLog(@"arrowPoint:%f,%f", arrowPoint.x, arrowPoint.y);
 
-    CGRect topViewBounds = topView.bounds;
-    //NSLog(@"topViewBounds %@", NSStringFromCGRect(topViewBounds));
+		CGRect parentViewBounds = parentView.bounds;
+		//NSLog(@"parentViewBounds %@", NSStringFromCGRect(parentViewBounds));
 
     float contentHeight = contentView.frame.size.height;
     float contentWidth = contentView.frame.size.width;
@@ -651,8 +647,8 @@
     float xOrigin = 0.f;
 
     //Make sure the arrow point is within the drawable bounds for the popover.
-    if (arrowPoint.x + kArrowHeight > topViewBounds.size.width - kHorizontalMargin - kBoxRadius - kArrowHorizontalPadding) {//Too far to the right
-        arrowPoint.x = topViewBounds.size.width - kHorizontalMargin - kBoxRadius - kArrowHorizontalPadding - kArrowHeight;
+		if (arrowPoint.x + kArrowHeight > parentViewBounds.size.width - kHorizontalMargin - kBoxRadius - kArrowHorizontalPadding) {//Too far to the right
+			arrowPoint.x = parentViewBounds.size.width - kHorizontalMargin - kBoxRadius - kArrowHorizontalPadding - kArrowHeight;
         //NSLog(@"Correcting Arrow Point because it's too far to the right");
     } else if (arrowPoint.x - kArrowHeight < kHorizontalMargin + kBoxRadius + kArrowHorizontalPadding) {//Too far to the left
         arrowPoint.x = kHorizontalMargin + kArrowHeight + kBoxRadius + kArrowHorizontalPadding;
@@ -664,11 +660,11 @@
     xOrigin = floorf(arrowPoint.x - boxWidth*0.5f);
 
     //Check to see if the centered xOrigin value puts the box outside of the normal range.
-    if (xOrigin < CGRectGetMinX(topViewBounds) + kHorizontalMargin) {
-        xOrigin = CGRectGetMinX(topViewBounds) + kHorizontalMargin;
-    } else if (xOrigin + boxWidth > CGRectGetMaxX(topViewBounds) - kHorizontalMargin) {
+		if (xOrigin < CGRectGetMinX(parentViewBounds) + kHorizontalMargin) {
+			xOrigin = CGRectGetMinX(parentViewBounds) + kHorizontalMargin;
+		} else if (xOrigin + boxWidth > CGRectGetMaxX(parentViewBounds) - kHorizontalMargin) {
         //Check to see if the positioning puts the box out of the window towards the left
-        xOrigin = CGRectGetMaxX(topViewBounds) - kHorizontalMargin - boxWidth;
+        xOrigin = CGRectGetMaxX(parentViewBounds) - kHorizontalMargin - boxWidth;
     }
 
     float arrowHeight = kArrowHeight;
@@ -677,7 +673,7 @@
 
     above = YES;
 
-    if (topPoint.y - contentHeight - arrowHeight - topPadding < CGRectGetMinY(topViewBounds)) {
+    if (topPoint.y - contentHeight - arrowHeight - topPadding < CGRectGetMinY(parentViewBounds)) {
         //Position below because it won't fit above.
         above = NO;
         
@@ -697,12 +693,12 @@
     //We set the anchorPoint here so the popover will "grow" out of the arrowPoint specified by the user.
     //You have to set the anchorPoint before setting the frame, because the anchorPoint property will
     //implicitly set the frame for the view, which we do not want.
-    self.layer.anchorPoint = CGPointMake(arrowPoint.x / topViewBounds.size.width, arrowPoint.y / topViewBounds.size.height);
-    self.frame = topViewBounds;
+		self.layer.anchorPoint = CGPointMake(arrowPoint.x / parentViewBounds.size.width, arrowPoint.y / parentViewBounds.size.height);
+		self.frame = parentViewBounds;
     [self setNeedsDisplay];
 
     [self addSubview:contentView];
-    [topView addSubview:self];
+    [parentView addSubview:self];
 
     //Add a tap gesture recognizer to the large invisible view (self), which will detect taps anywhere on the screen.
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
